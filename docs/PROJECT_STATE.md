@@ -1,20 +1,58 @@
 # OzonPriceExporter — Project State
 
-**Статус:** CURRENT  
+**Статус:** CURRENT / PATCH `0.1.3` PREPARED  
 **Обновлено:** 2026-09-28  
-**Канонический репозиторий:** `DudeDabbler/OzonPriceExporter`
+**Канонический репозиторий:** `DudeDabbler/OzonPriceExporter`  
+**Текущий change:** issue `#8`, branch `feat/commercial-contact-panel-20260928`
 
 ## Текущее опубликованное состояние
 
+Последний опубликованный стабильный релиз до merge и сборки patch:
+
 - версия: `0.1.2`;
-- каноническая ветка: `main`;
 - exact release source SHA: `cbcd90a8375a01420a341e963db6d2b8ded6d03b`;
 - GitHub Release: `v0.1.2`;
 - portable ZIP: `OzonPriceExporter-0.1.2-win-x64.zip`;
 - ZIP size: `51 593 011` bytes;
 - ZIP SHA-256: `98d861a050298bd02179d9558a867f44e0ad79095ed4880d2823c72783e2d37c`;
-- release workflow run: `36399490982`;
 - marketplace writes: `0`.
+
+## Patch `0.1.3`
+
+Реализовано в исходниках:
+
+- пользовательский блок коммерческой версии;
+- цена `12 900 ₽`;
+- формулировка `бессрочная лицензия`;
+- отдельное указание, что желаемые доработки и интеграции оцениваются отдельно;
+- информация о разработчике Елсукове Сергее;
+- контакты: e-mail, Telegram и телефон;
+- упоминание других мини-приложений для работы с ЛК Ozon/Wildberries;
+- responsive price/contact layout по композиции последних страниц презентации Price Tracker;
+- regression-контракт пользовательских формулировок и ссылок.
+
+Patch не меняет browser collection, парсинг, Excel-контракт, storage или marketplace safety.
+
+## Коммерческое предложение
+
+```text
+12 900 ₽ — бессрочная лицензия
+```
+
+Коммерческая редакция включает полный обход всех страниц каталога, сохранённые фильтры, удобный выбор категорий и расширенный аудит Excel.
+
+Доступны варианты с желаемыми доработками, интеграциями и дополнительными функциями. Цена обсуждается отдельно.
+
+## Разработчик и контакты
+
+```text
+Елсуков Сергей
+E-mail: ratatos692@gmail.com
+Telegram: @seryozha_human
+Телефон: +7 (961) 668-19-41
+```
+
+Предлагаются и другие локальные мини-приложения для работы с личными кабинетами Ozon и Wildberries: сбор данных, отчёты, контроль цен и автоматизация повторяющихся операций.
 
 ## Функциональный контракт
 
@@ -24,43 +62,33 @@
 - ассортимент обнаруживается автоматически из DOM и JSON/XHR кабинета;
 - результат публикуется в XLSX;
 - Windows portable-дистрибутив поставляется как one-folder ZIP;
-- пользовательский заголовок: `DudeDabbler · локальный инструмент`;
 - совместимый путь существующих профилей: `%LOCALAPPDATA%\IFOAM\OzonPriceExporter`;
 - новая переменная хранилища: `DUDEDABBLER_OZON_PRICE_EXPORTER_HOME`;
 - `IFOAM_OZON_PRICE_EXPORTER_HOME` остаётся fallback для обратной совместимости.
 
-## Верификация релиза `v0.1.2`
-
-GitHub Actions на exact release source SHA подтвердил:
+## Верификация `v0.1.2`
 
 ```text
 focused regression suite: 16 passed
 Python compile: PASS
 PyInstaller one-folder build: PASS
 packaged EXE bootstrap/static/version/shutdown smoke: PASS
-workflow artifact upload: PASS
 GitHub Release publication: PASS
 ```
 
-Сборка выполнена на Windows Server 2025, Python `3.12.10` x64, Playwright `1.63.0`, openpyxl `3.1.5`, PyInstaller `6.22.3`.
+## Verification gate `0.1.3`
 
-Авторизованный live-сценарий Ozon был подтверждён на предшествующей `0.1.1`. В `0.1.2` marketplace/browser collection contract не менялся; изменения относятся к самостоятельному репозиторию, брендингу, совместимости путей и воспроизводимой GitHub-сборке. Повторный вход в пользовательский кабинет не выполнялся и не требовался для переноса исходников и публикации чистого release ZIP.
+До публикации требуется:
 
-## Завершённая миграция
-
-Источник:
-
-- repository: `DudeDabbler/analytics-v2`;
-- branch: `feat/ozon-customer-price-exporter-v1-20260925`;
-- exact source SHA: `a368768bcd565e0ab4488545d665e5729f9f3e46`;
-- source PR: `analytics-v2#25`.
-
-Результат:
-
-- standalone migration PR `OzonPriceExporter#2` — merged;
-- release/hardening PRs `#3`, `#4`, `#5`, `#6` — merged;
-- old `analytics-v2#25` — `SUPERSEDED/HISTORICAL`, closed without merge;
-- `DudeDabbler/OzonPriceExporter/main` — единственный CURRENT-источник кода, документации, issues, builds и releases.
+```text
+focused tests PASS
+compileall PASS
+GitHub tree read-back
+PyInstaller one-folder build PASS
+packaged EXE smoke PASS
+ZIP + SHA-256 PASS
+GitHub Release v0.1.3 publication
+```
 
 ## Контракты, которые нельзя ослаблять
 
@@ -72,12 +100,12 @@ GitHub Release publication: PASS
 - секреты, cookies и выгрузки не входят в Git или release ZIP;
 - portable build должен завершать tests, EXE smoke, ZIP и SHA-256 до публикации.
 
-## Итоговый gate
+## Текущий gate
 
 ```text
-STANDALONE_MIGRATION_COMPLETE
-PORTABLE_RELEASE_V0_1_2_PUBLISHED
-OLD_CONTOUR_SUPERSEDED
+COMMERCIAL_CONTACT_PANEL_IMPLEMENTED
+CONTACTS_DOCUMENTED
+PATCH_0_1_3_SOURCE_READY
+TEST_AND_RELEASE_PENDING
+MARKETPLACE_WRITES_0
 ```
-
-Незакрытых blocker по задаче переноса приложения в отдельный GitHub-репозиторий нет.

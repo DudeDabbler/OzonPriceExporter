@@ -1,0 +1,157 @@
+.commercial-offer,
+.developer-card {
+  margin-top: 22px;
+  border: 1px solid rgba(219, 229, 239, .95);
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.commercial-offer {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(280px, .65fr);
+  overflow: hidden;
+}
+
+.commercial-copy,
+.developer-copy {
+  padding: 28px;
+}
+
+.commercial-copy h2,
+.developer-copy h2 {
+  margin-bottom: 12px;
+}
+
+.commercial-copy > p:not(.eyebrow),
+.developer-copy > p:not(.eyebrow) {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.commercial-copy .commercial-note {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.price-panel {
+  display: flex;
+  min-height: 250px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 30px;
+  text-align: center;
+  color: #fff;
+  background: linear-gradient(145deg, #1261a0 0%, #3475df 100%);
+}
+
+.price-panel span {
+  font-size: 15px;
+  font-weight: 750;
+}
+
+.price-panel strong {
+  font-size: clamp(38px, 5vw, 58px);
+  line-height: 1;
+  letter-spacing: -.035em;
+}
+
+.price-panel small {
+  font-size: 14px;
+  opacity: .86;
+}
+
+.developer-card {
+  display: grid;
+  grid-template-columns: minmax(270px, .75fr) minmax(0, 1.55fr);
+  gap: 20px;
+  padding: 28px;
+}
+
+.developer-copy {
+  padding: 0;
+}
+
+.response-note {
+  margin-top: 13px !important;
+  color: var(--primary-dark) !important;
+  font-weight: 800;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  align-self: center;
+}
+
+.contact-card {
+  display: flex;
+  min-height: 126px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 11px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  color: var(--ink);
+  text-decoration: none;
+  background: #f9fbfd;
+  transition: transform .14s ease, border-color .14s ease, box-shadow .14s ease;
+}
+
+.contact-card:hover {
+  transform: translateY(-2px);
+  border-color: #9fc2dc;
+  box-shadow: 0 12px 28px rgba(23, 50, 77, .10);
+}
+
+.contact-card span {
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.contact-card strong {
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 920px) {
+  .commercial-offer,
+  .developer-card {
+    grid-template-columns: 1fr;
+  }
+
+  .price-panel {
+    min-height: auto;
+    padding: 28px 22px;
+  }
+
+  .contact-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .commercial-copy,
+  .developer-card {
+    padding: 22px;
+  }
+
+  .contact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-card {
+    min-height: 92px;
+  }
+}

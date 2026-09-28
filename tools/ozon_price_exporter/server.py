@@ -18,7 +18,7 @@ from .storage import ProfileStore
 
 _STATIC_DIR = Path(__file__).resolve().parent / "static"
 _MAX_BODY_BYTES = 64 * 1024
-_VERSION = "0.1.2"
+_VERSION = "0.1.3"
 
 
 class LocalApplication:
