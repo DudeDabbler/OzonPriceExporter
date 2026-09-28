@@ -38,7 +38,7 @@ function Resolve-BuildPython {
             return (Resolve-Path $candidate).Path
         }
     }
-    throw "Python 3.12 x64 не найден. Укажите путь через -Python или DUDEDABBLER_PORTABLE_BUILD_PYTHON."
+    throw "Python 3.12 x64 was not found. Provide -Python or DUDEDABBLER_PORTABLE_BUILD_PYTHON."
 }
 
 function Invoke-Checked {
@@ -50,7 +50,7 @@ function Invoke-Checked {
     Write-Host "[$Label] $FilePath $($Arguments -join ' ')"
     & $FilePath @Arguments
     if ($LASTEXITCODE -ne 0) {
-        throw "$Label завершился с кодом $LASTEXITCODE."
+        throw "$Label failed with exit code $LASTEXITCODE."
     }
 }
 
@@ -60,17 +60,17 @@ $upstream = ""
 try { $upstream = (git rev-parse "@{u}" 2>$null).Trim() } catch {}
 $status = git status --porcelain
 if ($status) {
-    throw "Рабочее дерево не чистое. Сначала зафиксируйте или отмените изменения:`n$status"
+    throw "Working tree is not clean. Commit or discard changes first:`n$status"
 }
 if ($upstream -and $upstream -ne $commit) {
-    throw "Локальный HEAD $commit не совпадает с upstream $upstream. Выполните git pull --ff-only."
+    throw "Local HEAD $commit does not match upstream $upstream. Run git pull --ff-only."
 }
 
 $pythonExe = Resolve-BuildPython -Explicit $Python
 $bits = (& $pythonExe -c "import struct; print(struct.calcsize('P') * 8)").Trim()
 $pyVersion = (& $pythonExe -c "import sys; print('.'.join(map(str, sys.version_info[:3])))").Trim()
 if ($bits -ne "64") {
-    throw "Для portable win-x64 нужен 64-битный Python. Найдено: $bits-bit."
+    throw "Portable win-x64 requires 64-bit Python. Found: $bits-bit."
 }
 
 $version = (& $pythonExe -c "from tools.ozon_price_exporter import __version__; print(__version__)").Trim()
@@ -122,7 +122,7 @@ Invoke-Checked "pyinstaller" $buildPython @(
 )
 
 if (-not (Test-Path $exePath)) {
-    throw "PyInstaller не создал ожидаемый EXE: $exePath"
+    throw "PyInstaller did not create the expected EXE: $exePath"
 }
 
 Copy-Item (Join-Path $ToolDir "PORTABLE_README.txt") (Join-Path $bundleDir "README.txt") -Force
