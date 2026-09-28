@@ -24,7 +24,10 @@ def _report_startup_error(text: str) -> None:
         path.write_text(text, encoding="utf-8")
         location = str(path)
     except Exception:
-        location = "не удалось записать журнал запуска"
+        location = "startup error log could not be written"
+
+    if os.getenv("DUDEDABBLER_OZON_PRICE_EXPORTER_NO_DIALOG") == "1":
+        return
 
     message = (
         "Ozon Price Exporter не удалось запустить.\n\n"
