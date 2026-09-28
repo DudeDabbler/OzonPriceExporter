@@ -82,3 +82,11 @@ def test_portable_smoke_bypasses_loopback_proxies_and_surfaces_startup_errors() 
     assert 'env["DUDEDABBLER_OZON_PRICE_EXPORTER_NO_DIALOG"] = "1"' in smoke
     assert "startup_error.log" in smoke
     assert "DUDEDABBLER_OZON_PRICE_EXPORTER_NO_DIALOG" in entry
+
+
+def test_windowed_portable_normalizes_stdout_and_stderr_to_utf8() -> None:
+    entry = (TOOL / "portable_entry.py").read_text(encoding="utf-8")
+
+    assert 'stream.reconfigure(encoding="utf-8", errors="backslashreplace")' in entry
+    assert "sys.stdout = _utf8_stream(sys.stdout)" in entry
+    assert "sys.stderr = _utf8_stream(sys.stderr)" in entry
