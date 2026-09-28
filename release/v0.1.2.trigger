@@ -1,3 +1,3 @@
 OzonPriceExporter 0.1.2
 
-Attempt 3: bypass hosted-runner HTTP proxies for loopback smoke and publish from exact merged main.
+Attempt 4: normalize windowed stdout and stderr to UTF-8 before starting the local server.

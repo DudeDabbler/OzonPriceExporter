@@ -7,6 +7,7 @@ import os
 import sys
 import traceback
 from pathlib import Path
+from typing import TextIO
 
 from tools.ozon_price_exporter.__main__ import main
 from tools.ozon_price_exporter.storage import default_storage_root
@@ -42,11 +43,19 @@ def _report_startup_error(text: str) -> None:
     print(message)
 
 
+def _utf8_stream(stream: TextIO | None) -> TextIO:
+    if stream is None:
+        return open(os.devnull, "w", encoding="utf-8")
+    try:
+        stream.reconfigure(encoding="utf-8", errors="backslashreplace")
+        return stream
+    except (AttributeError, OSError, ValueError):
+        return open(os.devnull, "w", encoding="utf-8")
+
+
 def _ensure_streams() -> None:
-    if sys.stdout is None:
-        sys.stdout = open(os.devnull, "w", encoding="utf-8")
-    if sys.stderr is None:
-        sys.stderr = open(os.devnull, "w", encoding="utf-8")
+    sys.stdout = _utf8_stream(sys.stdout)
+    sys.stderr = _utf8_stream(sys.stderr)
 
 
 def run() -> int:
