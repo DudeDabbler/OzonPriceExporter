@@ -150,6 +150,30 @@ One-folder выбран вместо one-file, потому что:
 - Playwright driver и Node runtime видимы в `_internal`;
 - обновление программы не смешивается с browser profiles.
 
+## GitHub-only build и release
+
+Исходники, тесты, документация и build-контракт находятся в GitHub. Для переноса и выпуска portable-релиза не требуются локальные бизнес-данные, browser profiles, cookies или доступ к пользовательскому компьютеру.
+
+Канонический release pipeline:
+
+```text
+exact GitHub main
+→ focused tests
+→ Python compile
+→ PyInstaller one-folder build on windows-latest
+→ packaged EXE loopback smoke
+→ ZIP + SHA-256
+→ GitHub Release
+```
+
+Во время первой GitHub-сборки были обнаружены и устранены три инфраструктурных дефекта build/smoke-контура:
+
+1. Windows PowerShell 5.1 неверно декодировал UTF-8 без BOM — build script сделан ASCII-safe, workflow переведён на PowerShell 7.
+2. `urllib` мог наследовать proxy-настройки runner для `127.0.0.1` — smoke использует proxy-free opener и `NO_PROXY`.
+3. Windowed EXE получил `stdout/stderr` с `cp1252` — streams нормализуются в UTF-8 до старта локального сервера.
+
+Эти изменения не затронули Ozon collection/parser/Excel contract.
+
 ## Верификация
 
 Автоматически проверяются:
@@ -163,11 +187,29 @@ One-folder выбран вместо one-file, потому что:
 - DudeDabbler branding;
 - единая версия runtime;
 - наличие build/docs/workflow контрактов;
+- proxy-independent loopback smoke;
+- UTF-8-safe запуск windowed EXE;
 - smoke-test уже собранного EXE.
 
-Live acceptance требует Windows-компьютер с авторизованным кабинетом и выполняется только после публикации exact standalone SHA.
+## Опубликованный standalone release `v0.1.2`
 
-## История и миграция
+```text
+repository: DudeDabbler/OzonPriceExporter
+release source SHA: cbcd90a8375a01420a341e963db6d2b8ded6d03b
+workflow run: 36399490982
+focused tests: 16 passed
+PyInstaller build: PASS
+packaged EXE smoke: PASS
+ZIP: OzonPriceExporter-0.1.2-win-x64.zip
+ZIP size: 51 593 011 bytes
+ZIP SHA-256: 98d861a050298bd02179d9558a867f44e0ad79095ed4880d2823c72783e2d37c
+GitHub Release: v0.1.2
+marketplace writes: 0
+```
+
+Авторизованный live-сценарий Ozon был подтверждён на `0.1.1`. Версия `0.1.2` не меняет marketplace/browser collection contract; она завершает выделение репозитория, DudeDabbler branding, совместимость хранения и воспроизводимую GitHub-сборку. Поэтому перенос и публикация релиза не требуют доступа к пользовательскому кабинету.
+
+## Завершённая миграция
 
 Исторический источник:
 
@@ -178,21 +220,26 @@ exact SHA: a368768bcd565e0ab4488545d665e5729f9f3e46
 source PR: #25
 ```
 
-Исходная версия и portable EXE прошли live end-to-end проверку:
+Состояние после завершения:
 
-```text
-обычный Chrome
-→ авторизация
-→ автообнаружение
-→ read-only сбор
-→ Excel
-```
+- `DudeDabbler/OzonPriceExporter/main` — единственный CURRENT-источник;
+- migration PR `#2` и release/hardening PRs `#3`–`#6` объединены;
+- `analytics-v2#25` помечен `SUPERSEDED/HISTORICAL` и закрыт без merge;
+- новые code/docs/issues/builds/releases ведутся только в standalone-репозитории.
 
-После merge миграционного PR единственным CURRENT-источником становится `DudeDabbler/OzonPriceExporter/main`. Старый контур должен быть помечен `SUPERSEDED/HISTORICAL`, чтобы изменения не велись параллельно в двух репозиториях.
-
-## Влияние
+## Влияние и риски
 
 - production pricing и marketplace write routes не затрагиваются;
 - Chrome/Edge остаётся обязательной внешней предпосылкой;
 - unsigned EXE может вызвать SmartScreen;
-- совместимость зависит от текущего DOM/XHR Ozon и требует проверки после значимого изменения кабинета.
+- совместимость зависит от текущего DOM/XHR Ozon и требует проверки после значимого изменения кабинета;
+- изменение исторического default profile path без отдельной миграции запрещено.
+
+## Итог решения
+
+```text
+CURRENT_REPOSITORY = DudeDabbler/OzonPriceExporter
+STANDALONE_MIGRATION = COMPLETE
+PORTABLE_RELEASE_V0_1_2 = PUBLISHED
+OLD_ANALYTICS_V2_CONTOUR = SUPERSEDED
+```
