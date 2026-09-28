@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ozon — цены клиента</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">DudeDabbler · локальный инструмент</p>
+        <h1>Ozon — цены клиента</h1>
+        <p class="lead">Войдите в любой кабинет Ozon в отдельном браузере. Приложение само найдёт ассортимент, соберёт цены и подготовит Excel.</p>
+      </div>
+      <div id="statusBadge" class="status-badge" data-phase="idle">Готово</div>
+    </header>
+
+    <section class="notice safe">
+      <strong>Только чтение.</strong>
+      Приложение не меняет цены и товары. Логин и пароль вводятся только на странице Ozon и не передаются в интерфейс приложения.
+    </section>
+
+    <section class="steps">
+      <article class="card">
+        <div class="step-number">1</div>
+        <div class="card-body">
+          <h2>Откройте браузер магазина</h2>
+          <p>Для каждого магазина используется отдельный локальный профиль. Новый магазин можно указать прямо сейчас.</p>
+          <div class="form-row">
+            <label for="profileName">Название профиля</label>
+            <input id="profileName" list="profileList" maxlength="80" placeholder="Например, Основной магазин" autocomplete="off">
+            <datalist id="profileList"></datalist>
+          </div>
+          <div class="actions">
+            <button id="openBrowser" class="primary">Открыть Ozon</button>
+            <button id="closeBrowser" class="secondary">Закрыть браузер</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="step-number">2</div>
+        <div class="card-body">
+          <h2>Войдите в кабинет Ozon</h2>
+          <p>Завершите обычную авторизацию в открывшемся окне, включая код подтверждения, если Ozon его запросит.</p>
+          <div class="inline-status">
+            <span id="loginDot" class="dot"></span>
+            <span id="loginText">Браузер ещё не открыт</span>
+          </div>
+          <div class="actions">
+            <button id="checkLogin" class="secondary">Проверить вход</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="step-number">3</div>
+        <div class="card-body">
+          <h2>Соберите данные</h2>
+          <p>Импорт SKU не требуется: приложение автоматически проходит ассортимент авторизованного магазина.</p>
+          <div class="actions">
+            <button id="startCollection" class="primary">Собрать цены</button>
+            <button id="stopCollection" class="danger">Остановить</button>
+            <button id="downloadExcel" class="success">Скачать Excel</button>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="progress-card">
+      <div class="progress-head">
+        <div>
+          <p class="eyebrow">Текущий запуск</p>
+          <h2 id="statusMessage">Приложение готово.</h2>
+        </div>
+        <div class="metrics">
+          <div><span id="discovered">0</span><small>найдено</small></div>
+          <div><span id="processed">0</span><small>обработано</small></div>
+          <div><span id="okCount">0</span><small>успешно</small></div>
+          <div><span id="failedCount">0</span><small>замечания</small></div>
+        </div>
+      </div>
+      <div class="progress-track" aria-label="Прогресс сбора">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+      <p id="exportName" class="export-name"></p>
+    </section>
+
+    <section class="log-card">
+      <div class="section-title">
+        <h2>Журнал</h2>
+        <button id="shutdownApp" class="link-button">Закрыть приложение</button>
+      </div>
+      <div id="log" class="log" role="log" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
