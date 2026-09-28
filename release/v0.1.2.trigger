@@ -1,3 +1,3 @@
 OzonPriceExporter 0.1.2
 
-Attempt 2: run the encoding-safe portable build under PowerShell 7 from the exact merged main commit.
+Attempt 3: bypass hosted-runner HTTP proxies for loopback smoke and publish from exact merged main.

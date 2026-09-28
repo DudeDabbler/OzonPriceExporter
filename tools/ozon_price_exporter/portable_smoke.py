@@ -11,7 +11,10 @@ import tempfile
 import time
 from pathlib import Path
 from urllib.error import URLError
-from urllib.request import Request, urlopen
+from urllib.request import ProxyHandler, Request, build_opener
+
+
+_LOOPBACK_OPENER = build_opener(ProxyHandler({}))
 
 
 def reserve_port() -> int:
@@ -36,22 +39,45 @@ def request_json(
         headers["X-App-Token"] = token
         headers["Origin"] = url.split("/api/", 1)[0]
     request = Request(url, data=data, method=method, headers=headers)
-    with urlopen(request, timeout=timeout) as response:  # noqa: S310 - fixed loopback URL
+    with _LOOPBACK_OPENER.open(request, timeout=timeout) as response:  # noqa: S310 - fixed loopback URL
         return json.loads(response.read().decode("utf-8"))
 
 
-def wait_for_bootstrap(base_url: str, process: subprocess.Popen, timeout: float = 35.0) -> dict:
+def _startup_error_text(error_log: Path) -> str:
+    try:
+        if error_log.is_file():
+            return error_log.read_text(encoding="utf-8", errors="replace").strip()
+    except OSError:
+        pass
+    return ""
+
+
+def wait_for_bootstrap(
+    base_url: str,
+    process: subprocess.Popen,
+    *,
+    error_log: Path,
+    timeout: float = 90.0,
+) -> dict:
     deadline = time.monotonic() + timeout
     last_error = ""
     while time.monotonic() < deadline:
         if process.poll() is not None:
-            raise RuntimeError(f"Portable EXE завершился при запуске, код {process.returncode}.")
+            diagnostics = _startup_error_text(error_log)
+            detail = f" Startup diagnostics: {diagnostics}" if diagnostics else ""
+            raise RuntimeError(
+                f"Portable EXE завершился при запуске, код {process.returncode}.{detail}"
+            )
         try:
             return request_json(f"{base_url}/api/bootstrap", timeout=1.0)
         except (OSError, URLError, ValueError, json.JSONDecodeError) as exc:
             last_error = str(exc)
             time.sleep(0.25)
-    raise RuntimeError(f"Portable EXE не открыл локальный HTTP-порт. Последняя ошибка: {last_error}")
+    diagnostics = _startup_error_text(error_log)
+    detail = f" Startup diagnostics: {diagnostics}" if diagnostics else ""
+    raise RuntimeError(
+        f"Portable EXE не открыл локальный HTTP-порт. Последняя ошибка: {last_error}.{detail}"
+    )
 
 
 def main() -> int:
@@ -67,8 +93,13 @@ def main() -> int:
     port = reserve_port()
     base_url = f"http://127.0.0.1:{port}"
     with tempfile.TemporaryDirectory(prefix="dudedabbler-ozon-portable-smoke-") as home:
+        home_path = Path(home)
+        error_log = home_path / "startup_error.log"
         env = os.environ.copy()
         env["DUDEDABBLER_OZON_PRICE_EXPORTER_HOME"] = home
+        env["DUDEDABBLER_OZON_PRICE_EXPORTER_NO_DIALOG"] = "1"
+        env["NO_PROXY"] = "127.0.0.1,localhost"
+        env["no_proxy"] = "127.0.0.1,localhost"
         process = subprocess.Popen(
             [
                 str(executable),
@@ -85,7 +116,7 @@ def main() -> int:
             shell=False,
         )
         try:
-            bootstrap = wait_for_bootstrap(base_url, process)
+            bootstrap = wait_for_bootstrap(base_url, process, error_log=error_log)
             if bootstrap.get("version") != args.expected_version:
                 raise RuntimeError(
                     f"Версия portable EXE {bootstrap.get('version')!r}, "
@@ -96,7 +127,8 @@ def main() -> int:
                 raise RuntimeError("Bootstrap не вернул локальный токен.")
 
             for path in ("/", "/static/app.js", "/static/style.css"):
-                with urlopen(f"{base_url}{path}", timeout=3.0) as response:  # noqa: S310
+                request = Request(f"{base_url}{path}", headers={"Accept": "*/*"})
+                with _LOOPBACK_OPENER.open(request, timeout=3.0) as response:  # noqa: S310
                     if response.status != 200 or not response.read(32):
                         raise RuntimeError(f"Статический ресурс не прошёл smoke-test: {path}")
 

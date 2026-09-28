@@ -71,3 +71,14 @@ def test_standalone_docs_and_workflows_exist() -> None:
         ROOT / ".github" / "workflows" / "release-portable.yml",
     )
     assert all(path.is_file() for path in required)
+
+
+def test_portable_smoke_bypasses_loopback_proxies_and_surfaces_startup_errors() -> None:
+    smoke = (TOOL / "portable_smoke.py").read_text(encoding="utf-8")
+    entry = (TOOL / "portable_entry.py").read_text(encoding="utf-8")
+
+    assert "ProxyHandler({})" in smoke
+    assert 'env["NO_PROXY"] = "127.0.0.1,localhost"' in smoke
+    assert 'env["DUDEDABBLER_OZON_PRICE_EXPORTER_NO_DIALOG"] = "1"' in smoke
+    assert "startup_error.log" in smoke
+    assert "DUDEDABBLER_OZON_PRICE_EXPORTER_NO_DIALOG" in entry
