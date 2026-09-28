@@ -1,7 +1,7 @@
 # OzonPriceExporter
 
 **Статус:** CURRENT  
-**Версия:** 0.1.1  
+**Версия:** 0.1.2  
 **Режим:** локальное read-only приложение для Windows x64
 
 OzonPriceExporter получает цены из авторизованного кабинета продавца Ozon без Premium Pro:
@@ -31,7 +31,7 @@ Python, pip, venv, установщик и административные пр
 %LOCALAPPDATA%\IFOAM\OzonPriceExporter\
 ```
 
-Этот путь сохранён для совместимости с уже созданными профилями и авторизацией.
+Старый путь сохранён для совместимости с уже созданными профилями и авторизацией. Новая переменная `DUDEDABBLER_OZON_PRICE_EXPORTER_HOME` может переопределить место хранения; прежняя `IFOAM_OZON_PRICE_EXPORTER_HOME` остаётся совместимым fallback.
 
 ## Запуск из исходников
 
@@ -69,4 +69,4 @@ python -m pytest -q tests\test_ozon_price_exporter.py tests\test_ozon_price_expo
 
 Канонический код перенесён из `DudeDabbler/analytics-v2`, ветка `feat/ozon-customer-price-exporter-v1-20260925`, exact source SHA `a368768bcd565e0ab4488545d665e5729f9f3e46`.
 
-После миграции этот репозиторий является единственным CURRENT-источником приложения.
+После завершения миграции этот репозиторий является единственным CURRENT-источником приложения.

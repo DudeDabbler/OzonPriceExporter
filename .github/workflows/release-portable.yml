@@ -1,0 +1,43 @@
+name: Build portable Windows release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag, for example v0.1.2"
+        required: true
+        default: "v0.1.2"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          architecture: x64
+      - name: Build portable ZIP
+        shell: powershell
+        run: .\tools\ozon_price_exporter\build_portable.ps1 -Python (Get-Command python).Source
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OzonPriceExporter-portable
+          path: |
+            dist/OzonPriceExporter-*-win-x64.zip
+            dist/OzonPriceExporter-*-win-x64.zip.sha256
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag }}
+          generate_release_notes: true
+          files: |
+            dist/OzonPriceExporter-*-win-x64.zip
+            dist/OzonPriceExporter-*-win-x64.zip.sha256
