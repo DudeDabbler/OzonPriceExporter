@@ -12,7 +12,7 @@ TOOL = ROOT / "tools" / "ozon_price_exporter"
 
 
 def test_portable_version_is_single_runtime_contract() -> None:
-    assert __version__ == "0.1.2"
+    assert __version__ == "0.1.3"
     assert RuntimeState().snapshot()["version"] == __version__
 
 
@@ -25,6 +25,7 @@ def test_portable_distribution_files_are_versioned() -> None:
         TOOL / "portable_entry.py",
         TOOL / "portable_smoke.py",
         TOOL / "PORTABLE_README.txt",
+        TOOL / "static" / "commercial.css",
     )
     missing = [str(path.relative_to(ROOT)) for path in required if not path.is_file()]
     assert not missing, f"missing portable files: {missing}"
@@ -50,6 +51,30 @@ def test_static_ui_uses_dudedabbler_brand() -> None:
     html = (TOOL / "static" / "index.html").read_text(encoding="utf-8")
     assert "DudeDabbler · локальный инструмент" in html
     assert "IFOAM · локальный инструмент" not in html
+
+
+def test_static_ui_exposes_commercial_offer_and_developer_contacts() -> None:
+    html = (TOOL / "static" / "index.html").read_text(encoding="utf-8")
+    css = (TOOL / "static" / "commercial.css").read_text(encoding="utf-8")
+
+    for expected in (
+        "12 900 ₽",
+        "Бессрочная лицензия",
+        "Доступны варианты с желаемыми доработками",
+        "Елсуков Сергей",
+        "ratatos692@gmail.com",
+        "@seryozha_human",
+        "+7 (961) 668-19-41",
+        "другие мини-приложения",
+        "Ozon и Wildberries",
+    ):
+        assert expected in html
+    assert 'href="mailto:ratatos692@gmail.com"' in html
+    assert 'href="https://t.me/seryozha_human"' in html
+    assert 'href="tel:+79616681941"' in html
+    assert 'href="/static/commercial.css"' in html
+    assert ".price-panel" in css
+    assert ".contact-grid" in css
 
 
 def test_new_storage_env_has_priority_and_legacy_alias_remains(monkeypatch, tmp_path: Path) -> None:
