@@ -1,7 +1,7 @@
 # OzonPriceExporter
 
-**Статус:** CURRENT / `0.1.3` PATCH PREPARED  
-**Версия исходников:** 0.1.3  
+**Статус:** CURRENT  
+**Версия:** `0.1.3`  
 **Режим:** локальное read-only приложение для Windows x64
 
 OzonPriceExporter получает цены из авторизованного кабинета продавца Ozon без Premium Pro:
@@ -17,20 +17,19 @@ OzonPriceExporter получает цены из авторизованного 
 
 Приложение не требует предварительного каталога SKU и не изменяет цены, акции или карточки.
 
-## Опубликованный portable-релиз
+## Актуальный portable-релиз
 
-До публикации patch-релиза `0.1.3` последним стабильным остаётся:
-
-- release: [`v0.1.2`](https://github.com/DudeDabbler/OzonPriceExporter/releases/tag/v0.1.2);
-- файл: `OzonPriceExporter-0.1.2-win-x64.zip`;
-- SHA-256: `98d861a050298bd02179d9558a867f44e0ad79095ed4880d2823c72783e2d37c`;
+- release: [`v0.1.3`](https://github.com/DudeDabbler/OzonPriceExporter/releases/tag/v0.1.3);
+- exact release source SHA: `a66fd5b7a5ffdbd1fdd79b74110c5a8f1d05777a`;
+- файл: `OzonPriceExporter-0.1.3-win-x64.zip`;
+- размер: `51 595 412` байт;
+- SHA-256: `98e6049df5b935e77ef643570fbe4a26fa077d365843e50b0f5479b85e94dfc7`;
+- tests, compile, PyInstaller build и packaged EXE smoke: `PASS`;
 - marketplace writes: `0`.
-
-Patch `0.1.3` добавляет в интерфейс информацию о коммерческой версии, лицензии, индивидуальных доработках и контактах разработчика. Runtime сбора цен и safety-контракт не меняются.
 
 ## Portable-запуск
 
-1. Скачайте ZIP из GitHub Release.
+1. Скачайте ZIP из GitHub Release `v0.1.3`.
 2. Полностью распакуйте архив.
 3. Запустите `OzonPriceExporter.exe`.
 
@@ -56,7 +55,7 @@ Python, pip, venv, установщик и административные пр
 
 ## Разработчик и другие мини-приложения
 
-**Елсуков Сергей** разрабатывает локальные мини-приложения для работы с личными кабинетами Ozon и Wildberries: сбор данных, отчёты, контроль цен и автоматизацию повторяющихся операций.
+**Елсуков Сергей** разрабатывает и другие локальные мини-приложения для работы с личными кабинетами Ozon и Wildberries: сбор данных, отчёты, контроль цен и автоматизацию повторяющихся операций.
 
 - E-mail: `ratatos692@gmail.com`;
 - Telegram: `@seryozha_human`;
